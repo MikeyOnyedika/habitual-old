@@ -14,9 +14,11 @@ export default function HabitCard({ description, id, name, stopDate, startDate, 
   const remainingMillis = Math.abs(stop.getTime() - start.getTime());
   const remainingDays = Math.ceil(remainingMillis / (1000 * 60 * 60 * 24));
   return (
-    <div onClick={(e) => {
-      router.push(`/habits/${id}`)
-    }} className="rounded-md group border-purple-100 border-2 w-full xl:max-w-[30rem] p-4 hover:bg-purple-50 flex">
+    <div
+      onClick={(e) => {
+        router.push(`/habits/${id}`)
+      }}
+      className="rounded-md cursor-pointer group border-purple-100 border-2 w-full xl:max-w-[30rem] p-4 hover:bg-purple-50 flex">
       <div className="flex flex-col gap-2 w-full">
         <div className="flex w-full gap-1 justify-between">
           <h2 className="text-base line-clamp-1">{name}</h2>
@@ -34,9 +36,11 @@ export default function HabitCard({ description, id, name, stopDate, startDate, 
             </IconContext.Provider>
           </div>
         </div>
-        {description &&
-          <p className="text-gray-700 italic line-clamp-2 text-sm"> {description}</p>
-        }
+        {description ? (
+          <p className="text-gray-700 line-clamp-2 text-sm"> {description}</p>
+        ) : (
+          <p className="text-gray-700 italic line-clamp-2 text-sm">{"<No Description>"}</p>
+        )}
 
         <p className="flex items-center justify-end text-xs">
           &lt;

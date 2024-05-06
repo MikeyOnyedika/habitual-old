@@ -23,14 +23,14 @@ export default function Login() {
   }
 
   return (
-    <div className="w-full max-w-[30rem] flex flex-col gap-4">
+    <div className="w-full max-w-[25rem] flex flex-col gap-4">
       <p className="text-center text-lg">Login</p>
       <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
         <TextInput name="email" value={formState.email} label="Email" onChange={handleOnChange} />
         <TextInput name="password" value={formState.password} label="Password" onChange={handleOnChange} />
         <SubmitBtn label="Continue" />
       </form>
-      <Link href="/signup" className="text-sm hover:underline w-full text-purple-800 text-center">Don't have an account? Signup</Link>
+      <Link href="/signup" className="text-sm hover:underline w-full text-purple-800 text-center">Don&apos;t have an account? Signup</Link>
     </div>
   )
 }

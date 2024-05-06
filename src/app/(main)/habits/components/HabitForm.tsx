@@ -15,13 +15,13 @@ const initialFormState: THabitFormState = {
 
 type Props = {
   isEdit?: boolean,
-  oldFormState: THabit
+  oldFormState?: THabit
 }
 
 export default function HabitForm({ isEdit = false, oldFormState }: Props) {
   const [formState, setFormState] = useState<THabit | THabitFormState>(() => {
     if (isEdit) {
-      return oldFormState
+      return oldFormState as THabit
     }
     return initialFormState
   });

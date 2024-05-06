@@ -18,3 +18,19 @@ export type TDay = {
 }
 
 export type TDayStatus = "fulfilled" | "unfulfilled" | "pending"
+
+export type TZodError = {
+  field: string,
+  message: string
+}
+
+export type TSignupBody = {
+  email: string, password: string
+}
+
+export type TUser = {
+  email: string,
+  id: string,
+  createdAt: string,
+  updatedAt: string
+}

@@ -1,5 +1,4 @@
 import AddNewHabit from "./components/AddNewHabit";
-import HabitForm from "./components/HabitForm";
 import HabitsList from "./components/HabitsList";
 
 export default function HabitsPage() {

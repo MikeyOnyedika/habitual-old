@@ -48,3 +48,44 @@ export async function createUser({ email, password }: TSignupBody): Promise<{
     }
   }
 }
+
+export async function findUserByEmail(email: string): Promise<{
+  status: "success",
+  data: TUser & { password: string } | null
+} | {
+  status: "error",
+  error: string
+}> {
+  const conn = await connectDB();
+  if (conn.status === "error") {
+    return {
+      status: "error",
+      error: "Couldn't complete request"
+    }
+  }
+  try {
+    const user = await DBUser.findOne({ email }).exec();
+    if (user == null) {
+      return {
+        status: "success",
+        data: null
+      }
+    }
+    return {
+      status: "success",
+      data: {
+        id: user.id,
+        password: user.password,
+        email: user.email,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      }
+    }
+  } catch (er) {
+    const err = er as unknown as any
+    return {
+      status: "error",
+      error: "Couldn't find user account"
+    }
+  }
+}

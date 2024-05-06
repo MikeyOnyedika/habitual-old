@@ -28,6 +28,8 @@ export type TSignupBody = {
   email: string, password: string
 }
 
+export type TLoginBody = TSignupBody
+
 export type TUser = {
   email: string,
   id: string,

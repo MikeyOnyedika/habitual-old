@@ -48,7 +48,12 @@ export async function createAccount(email: string, password: string): Promise<
   }
 }
 
-export async function logIn({ email, password }: { email: string, password: string }) {
+export async function logIn({ email, password }: { email: string, password: string }): Promise<{
+  status: "success"
+} | {
+  status: "error",
+  error: string
+}> {
   const res = await signIn("credentials", {
     email,
     password,
@@ -57,6 +62,7 @@ export async function logIn({ email, password }: { email: string, password: stri
   if (res?.error) {
     return {
       status: "error",
+      error: res.error
     }
   }
   return {

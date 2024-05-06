@@ -6,7 +6,7 @@ export async function POST(req: Request) {
   // accept the credentials
   const body = await safeParseJSONBody<{ email: string, password: string }>(req);
 
-  // validate them
+  // validate fields in body
   const parsedBody = validateSignupBody(body);
 
   if (parsedBody.status === "error") {

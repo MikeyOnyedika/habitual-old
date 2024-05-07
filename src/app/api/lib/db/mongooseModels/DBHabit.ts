@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 const habitSchema = new Schema({
   name: {
@@ -6,7 +6,8 @@ const habitSchema = new Schema({
     required: true
   },
   description: {
-    type: String
+    type: String,
+    required: true
   },
   startDate: {
     type: String,
@@ -16,14 +17,18 @@ const habitSchema = new Schema({
     type: String,
     required: true
   },
+  ownerID: {
+    type: String,
+    required: true
+  }
 }, {
   timestamps: true
 });
 
-habitSchema.virtual("currentDay").get(function() {
-  const currentDay = new Date();
-  return currentDay
-})
+// habitSchema.virtual("currentDay").get(function() {
+//   const currentDay = new Date();
+//   return currentDay
+// })
 
-const DBHabit = model("DBHabit", habitSchema);
+const DBHabit = models.DBHabit ?? model("DBHabit", habitSchema);
 export default DBHabit;

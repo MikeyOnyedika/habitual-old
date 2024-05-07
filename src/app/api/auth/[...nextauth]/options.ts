@@ -71,9 +71,7 @@ const authOptions: NextAuthOptions = {
       }
       return true
     },
-    session({ session, user }) {
-      console.log("session callback: user: ", user);
-      console.log("session callback: session: ", session);
+    session({ session, user, token }) {
       return session
     }
   }

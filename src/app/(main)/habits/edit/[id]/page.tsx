@@ -1,5 +1,5 @@
-import { fetchHabit } from "@/app/requests";
 import HabitForm from "../../components/HabitForm"
+import { fetchHabit } from "@/app/requests/habits";
 import { redirect } from "next/navigation";
 
 type Props = {

@@ -4,11 +4,14 @@ export type THabit = {
   description: string,
   startDate: string,
   stopDate: string,
-  currentDay: string
+  createdAt: string,
+  updatedAt: string,
+  ownerID: string,
 }
 
+export type TNewHabit = Omit<THabit, "id" | "createdAt" | "updatedAt" | "ownerID">
 
-export type THabitFormState = Omit<THabit, "id" | "currentDay">
+export type THabitFormState = TNewHabit;
 
 export type TDay = {
   id: string,
@@ -36,3 +39,4 @@ export type TUser = {
   createdAt: string,
   updatedAt: string
 }
+

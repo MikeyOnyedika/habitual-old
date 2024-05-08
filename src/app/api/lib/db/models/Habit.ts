@@ -1,6 +1,7 @@
 import { THabit, TNewHabit } from "@/app/types";
 import DBHabit from "../mongooseModels/DBHabit";
 import mongoose from "mongoose"
+import { deleteHabitDays } from "./Day";
 
 export async function addHabit(newHabit: TNewHabit & { ownerID: string }): Promise<{
   status: "success",
@@ -87,9 +88,18 @@ export async function deleteHabit(habitID: string, ownerID: string): Promise<{
         error: "You are not allowed to delete this habit"
       }
     }
-    // actually delete  the request
+
+    // delete the days associated with this habit
+    const delDaysRes = await deleteHabitDays(habitID);
+    if (delDaysRes.status === "error") {
+      return {
+        statusCode: 500,
+        error: "Couldn't complete request"
+      }
+    }
+
+    // actually delete  the habit
     const res = await DBHabit.deleteOne({ _id: habitID });
-    console.log("server: delete habit: ", res);
     return {
       statusCode: 200,
       data: habitToDelete

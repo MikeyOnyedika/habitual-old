@@ -163,3 +163,23 @@ export function getDateString(dateText: string) {
   const dateString = new Date(isoDate).toDateString();
   return dateString;
 }
+
+export function generateRangedDateStrings(from: string, to: string): string[] {
+  const fromDate = new Date(new Date(getDateStringFromDateTimeString(from)).toISOString());
+  const toDate = new Date(new Date(getDateStringFromDateTimeString(to)).toISOString());
+  let currentDate = fromDate;
+  const datesWithinRange: string[] = []
+  while (currentDate <= toDate) {
+    datesWithinRange.push(currentDate.toISOString());
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return datesWithinRange;
+}
+
+export function getDateStringFromDateTimeString(dateString: string): string {
+  if (dateString.includes("T")) {
+    let parts = dateString.split("T");
+    return parts[0];
+  }
+  return dateString
+}

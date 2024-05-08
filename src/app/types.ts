@@ -17,10 +17,12 @@ export type TDay = {
   id: string,
   habitID: string,
   date: string,
-  status: TDayStatus
+  isPerformed: boolean,
+  createdAt: string,
+  updatedAt: string
 }
 
-export type TDayStatus = "fulfilled" | "unfulfilled" | "pending"
+export type TNewDay = Omit<TDay, "id" | "isPerformed" | "createdAt" | "updatedAt">
 
 export type TZodError = {
   field: string,

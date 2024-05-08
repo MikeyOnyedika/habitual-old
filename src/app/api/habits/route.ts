@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getDateString, safeParseJSONBody, validateCreateHabitBody } from "../lib/utils"
+import { generateRangedDateStrings, getDateString, safeParseJSONBody, validateCreateHabitBody } from "../lib/utils"
 import { getServerSession } from "next-auth"
 import authOptions from "../auth/[...nextauth]/options"
 import { findUserByEmail } from "../lib/db/models/User"
-import { TNewHabit } from "@/app/types"
-import { addHabit, getHabits } from "../lib/db/models/Habit"
+import { TNewDay, TNewHabit } from "@/app/types"
+import { addHabit, deleteHabit, getHabits } from "../lib/db/models/Habit"
+import { addHabitDays } from "../lib/db/models/Day"
 
 export const GET = async (req: NextRequest) => {
   const session = await getServerSession(authOptions);
@@ -77,6 +78,18 @@ export const POST = async (req: NextRequest) => {
   }
 
   const userID = userQuery.data.id;
+
+
+  // confirm that the startDate is less than the stopDate
+  const startDate = new Date(reqBody.startDate);
+  const stopDate = new Date(reqBody.stopDate);
+  if (startDate > stopDate) {
+    return NextResponse.json({
+      status: "error",
+      error: "Start Date should not be greater than Stop Date"
+    }, { status: 400 })
+  }
+
   // actually add a new habit
   const habitRes = await addHabit({ ...reqBody, ownerID: userID });
   if (habitRes.status === "error") {
@@ -84,6 +97,28 @@ export const POST = async (req: NextRequest) => {
       status: "error",
       error: "Something went wrong"
     }, { status: 500 })
+  }
+
+  // generate the habit days
+  const habitDateStrings = generateRangedDateStrings(reqBody.startDate, reqBody.stopDate);
+
+  // generate habitDays from the habit strings
+  const habitDays = habitDateStrings.map(habitDate => {
+    return {
+      date: habitDate,
+      habitID: habitRes.data.id,
+      isPerformed: false
+    }
+  })
+
+  // enter each of the habitDays into the db
+  const addHabitDaysResult = await addHabitDays(habitDays);
+  if (addHabitDaysResult.status === "error") {
+    // delete the habit
+    await deleteHabit(habitRes.data.id, userID);
+    return NextResponse.json({
+      status: "error", error: "Something went wrong"
+    }, { status: 500 });
   }
 
   return NextResponse.json(habitRes, {

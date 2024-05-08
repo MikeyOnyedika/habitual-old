@@ -43,7 +43,7 @@ export default function HabitCard({ description, id, name, stopDate, startDate, 
         if (deleteMutation.isPending) return;
         router.push(`/habits/${id}`)
       }}
-      className={`rounded-md cursor-pointer group border-purple-100 border-2 w-full xl:max-w-[30rem] p-4 hover:bg-purple-50 flex ${deleteMutation.isPending ? "opacity-75" : ""}`}>
+      className={`rounded-md cursor-pointer group border-purple-100 border-2 w-full h-full xl:max-w-[30rem] p-4 hover:bg-purple-50 flex ${deleteMutation.isPending ? "opacity-75" : ""}`}>
       <div className="flex flex-col gap-2 w-full">
         <div className="flex w-full gap-1 justify-between">
           <h2 className="text-base line-clamp-1">{name}</h2>

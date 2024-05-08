@@ -1,9 +1,11 @@
-export default function LoadingAnimation({ scale = 1 }: {
-  scale?: number
+export default function LoadingAnimation({ size = "large" }: {
+  size?: "small" | "large"
 }) {
   return (
     <div className="flex justify-center">
-      <div className={`animate-spin w-[3rem] h-[3rem] border-t-4 border-t-purple-300 border-r-4 border-r-purple-300 border-b-4 border-b-purple-300 rounded-full bg-transparent scale-[${scale}]`}></div>
+      <div className={`animate-spin border-r-purple-300  rounded-full bg-transparent
+${size === "small" ? "w-4 h-4 border-t-2 border-r-2" : ""}  ${size === "large" ? "w-10 h-10 border-t-4 border-r-4" : ""}
+`}></div>
     </div>
   )
 }

@@ -25,10 +25,5 @@ const habitSchema = new Schema({
   timestamps: true
 });
 
-// habitSchema.virtual("currentDay").get(function() {
-//   const currentDay = new Date();
-//   return currentDay
-// })
-
 const DBHabit = models.DBHabit ?? model("DBHabit", habitSchema);
 export default DBHabit;

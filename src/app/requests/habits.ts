@@ -81,3 +81,40 @@ export async function fetchHabit(id: string): Promise<{
     }
   }
 }
+
+
+
+export async function deleteHabit(id: string): Promise<{
+  status: "success",
+  data: THabit
+} | {
+  status: "error",
+  error: string
+}> {
+  try {
+    const { data } = await api.delete(`/habits/${id}`)
+    console.log("data: ", data);
+    return {
+      data: {
+        id: "aksdfasdfask",
+        name: "Do 10 pushups every morning",
+        description: "it's just that; I aim to do pushups for the next 20days",
+        ownerID: "",
+        startDate: "2024/05/01",
+        stopDate: "2024/05/15",
+        createdAt: "",
+        updatedAt: "",
+      },
+      status: "success"
+    }
+  } catch (er) {
+    const err = er as AxiosError;
+    if (err.response) {
+      return (err.response.data) as { status: "error", error: string }
+    }
+    return {
+      status: "error",
+      error: "Couldn't complete request"
+    }
+  }
+}

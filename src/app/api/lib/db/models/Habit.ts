@@ -44,7 +44,6 @@ export async function getHabits(ownerID: string): Promise<{
     const habits = await DBHabit.find({
       ownerID
     });
-    console.log("habits: ", habits);
     return {
       status: "success",
       data: habits.map(habit => ({
@@ -61,6 +60,43 @@ export async function getHabits(ownerID: string): Promise<{
   } catch (err) {
     return {
       status: "error",
+      error: "Couldn't complete request"
+    }
+  }
+}
+
+export async function deleteHabit(habitID: string, ownerID: string): Promise<{
+  statusCode: 200,
+  data: null | THabit
+} | {
+  statusCode: 403 | 500,
+  error: string
+}> {
+  try {
+    const habitToDelete = await DBHabit.findById(habitID);
+    if (!habitToDelete) { // this would mean that the habit had already been deleted
+      return {
+        statusCode: 200,
+        data: null
+      }
+    }
+    // check to make sure that the client making this request is the actual owner of the habit
+    if (habitToDelete.ownerID !== ownerID) {
+      return {
+        statusCode: 403,
+        error: "You are not allowed to delete this habit"
+      }
+    }
+    // actually delete  the request
+    const res = await DBHabit.deleteOne({ _id: habitID });
+    console.log("server: delete habit: ", res);
+    return {
+      statusCode: 200,
+      data: habitToDelete
+    }
+  } catch (err) {
+    return {
+      statusCode: 500,
       error: "Couldn't complete request"
     }
   }

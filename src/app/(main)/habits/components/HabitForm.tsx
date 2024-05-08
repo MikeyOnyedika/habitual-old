@@ -6,7 +6,7 @@ import SubmitBtn from "@/app/components/SubmitBtn"
 import { THabit, THabitFormState, TNewHabit } from "@/app/types"
 import { FormEvent, useRef, useState } from "react"
 import toast from "react-hot-toast"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { addHabit } from "@/app/requests/habits"
 
 const initialFormState: THabitFormState = {
@@ -37,6 +37,7 @@ export default function HabitForm(props: Props) {
     return initialFormState
   });
   const today = new Date().toISOString().split("T")[0];
+  const queryClient = useQueryClient();
 
 
   const addHabitMutation = useMutation({
@@ -95,6 +96,11 @@ export default function HabitForm(props: Props) {
         toast.error(res.error);
         return;
       }
+
+      queryClient.invalidateQueries({
+        queryKey: ["habits"],
+        exact: true
+      })
       setFormState(initialFormState);
       toast.success("New Habit added successfully");
     }

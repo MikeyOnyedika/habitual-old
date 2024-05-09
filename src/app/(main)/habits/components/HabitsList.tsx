@@ -1,7 +1,7 @@
 "use client"
 import HabitCard from "./HabitCard"
 import { fetchHabits } from "@/app/requests/habits";
-import EmptyList from "../../components/EmptyList";
+import CenteredMessage from "../../components/CenteredMessage";
 import { useQuery } from "@tanstack/react-query";
 import LoadingAnimation from "@/app/components/LoadingAnimation";
 import FetchQueryError from "../../components/FetchQueryError";
@@ -46,7 +46,7 @@ export default function HabitsList() {
         }
       </ul>
     ) : (
-      <EmptyList message={"you are currently not tracking any habit"} />
+      <CenteredMessage message={"you are currently not tracking any habit"} />
     )
   )
 }

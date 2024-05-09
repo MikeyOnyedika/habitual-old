@@ -66,6 +66,44 @@ export async function getHabits(ownerID: string): Promise<{
   }
 }
 
+export async function getHabit(ownerID: string, habitID: string): Promise<
+  {
+    status: "success",
+    data: THabit | null
+  } | {
+    status: "error",
+    error: string
+  }> {
+  try {
+    const habit = await DBHabit.findOne({ _id: habitID, ownerID });
+    if (!habit) {
+      return {
+        status: "success",
+        data: null
+      }
+    }
+    return {
+      status: "success",
+      data: {
+        id: habit._id,
+        name: habit.name,
+        description: habit.description,
+        ownerID: habit.ownerID,
+        startDate: habit.startDate,
+        stopDate: habit.stopDate,
+        createdAt: habit.createdAt,
+        updatedAt: habit.updatedAt
+      }
+    };
+  } catch (err) {
+    return {
+      status: "error",
+      error: "Couldn't complete request"
+    }
+  }
+}
+
+
 export async function deleteHabit(habitID: string, ownerID: string): Promise<{
   statusCode: 200,
   data: null | THabit

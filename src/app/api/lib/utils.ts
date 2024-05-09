@@ -1,9 +1,6 @@
 import { TLoginBody, TNewHabit, TSignupBody, TZodError } from "@/app/types"
 import bcrypt from "bcrypt"
-import { getServerSession } from "next-auth"
 import zod from "zod"
-import { findUserByEmail } from "./db/models/User"
-import authOptions from "../auth/[...nextauth]/options"
 
 // parses the req body into an object. If nothing was passed, an empty object is returned
 export async function safeParseJSONBody<T = any>(req: Request): Promise<Partial<T>> {
@@ -183,3 +180,4 @@ export function getDateStringFromDateTimeString(dateString: string): string {
   }
   return dateString
 }
+

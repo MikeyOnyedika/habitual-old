@@ -8,15 +8,15 @@ import { MouseEvent } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { deleteHabit } from "@/app/requests/habits"
 import LoadingAnimation from "@/app/components/LoadingAnimation";
+import { getRemainingDays } from "../../utils";
 
-type Props = THabit & {}
+type Props = THabit
 
-export default function HabitCard({ description, id, name, stopDate, startDate, currentDay }: Props) {
+export default function HabitCard({ description, id, name, stopDate, startDate }: Props) {
   const router = useRouter();
-  const start = new Date(startDate);
-  const stop = new Date(stopDate);
-  const remainingMillis = Math.abs(stop.getTime() - start.getTime());
-  const remainingDays = Math.ceil(remainingMillis / (1000 * 60 * 60 * 24));
+
+  const remainingDays = getRemainingDays(startDate, stopDate);
+
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
@@ -51,7 +51,7 @@ export default function HabitCard({ description, id, name, stopDate, startDate, 
             <IconContext.Provider value={{ className: "text-3xl hover:bg-gray-200 p-1.5 rounded-md" }}>
               <button type="button" onClick={(e) => {
                 e.stopPropagation();
-                router.push(`/ habits / edit / ${id} `);
+                router.push(`/habits/edit/${id}`);
               }}
                 disabled={deleteMutation.isPending}
               >
@@ -81,6 +81,6 @@ export default function HabitCard({ description, id, name, stopDate, startDate, 
             remainingDays
           } days</p>
       </div>
-    </div >
+    </div>
   )
 }

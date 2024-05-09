@@ -63,15 +63,9 @@ export async function fetchHabit(id: string): Promise<{
   error: string
 }> {
   try {
+    const { data } = await api.get(`/habits/${id}`);
     return {
-      data: {
-        id: "aksdfasdfask",
-        name: "Do 10 pushups every morning",
-        description: "it's just that; I aim to do pushups for the next 20days",
-        startDate: "2024/05/01",
-        stopDate: "2024/05/15",
-        currentDay: "ldkadfkasf",
-      },
+      data: data.data as THabit,
       status: "success"
     }
   } catch (err) {
@@ -81,7 +75,6 @@ export async function fetchHabit(id: string): Promise<{
     }
   }
 }
-
 
 
 export async function deleteHabit(id: string): Promise<{

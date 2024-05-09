@@ -9,16 +9,22 @@ type Props = {
 }
 
 export default async function EditHabitPage({ params }: Props) {
-  const habitToEdit = await fetchHabit(params.id);
-  if (habitToEdit.status === "success") {
-    console.log("habit successful: ", habitToEdit);
-    return (
-      <div className="flex flex-col gap-1 w-full px-2 md:px-4 py-1">
-        <HabitForm isEdit={true} oldFormState={habitToEdit.data} />
-      </div>
-    )
-  }
+  // const habitToEdit = await fetchHabit(params.id);
+  // if (habitToEdit.status === "success") {
+  //   console.log("habit successful: ", habitToEdit);
+  //   return (
+  //     <div className="flex flex-col gap-1 w-full px-2 md:px-4 py-1">
+  //       <HabitForm isEdit={true} oldFormState={habitToEdit.data} />
+  //     </div>
+  //   )
+  // }
   console.log("Cannot find this habit");
-  redirect("/habits");
+
+  // redirect("/habits");
+  return (
+    <div>
+      edit habit page
+    </div>
+  )
 }
 

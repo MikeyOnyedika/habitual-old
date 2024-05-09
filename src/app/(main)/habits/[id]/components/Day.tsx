@@ -1,48 +1,77 @@
 "use client"
-import { TDay, TDayStatus } from "@/app/types"
-import { ChangeEvent, useEffect, useState } from "react"
 
-export default function Day({ day, serialNumber }: {
+import { canUpdateDayStatus, getDateStringFromDateTimeString } from "@/app/(main)/utils";
+import { updateDayStatus } from "@/app/requests/days";
+import { TDay } from "@/app/types"
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ChangeEvent, MouseEvent, useEffect, useState } from "react"
+import toast from "react-hot-toast"
+
+export default function Day({ day, serialNumber, currentDateTime }: {
   day: TDay,
-  serialNumber: number
+  serialNumber: number,
+  currentDateTime: string,
 }) {
-  const [status, setStatus] = useState<TDayStatus>(day.status);
+  const [isHabitPerformed, setIsHabitPerformed] = useState(day.isPerformed);
+  const queryClient = useQueryClient();
 
-  const booleanStatus = statusToBoolean(status);
+  const updateDayStatusMutation = useMutation({
+    mutationFn: async (update: { status: boolean, id: string }) => await updateDayStatus(update.status, update.id),
+  });
 
-  function booleanToStatus(isChecked: boolean): TDayStatus {
-    if (isChecked) {
-      return "fulfilled"
+  const currentDate = getDateStringFromDateTimeString(currentDateTime);
+  const canUpdate = canUpdateDayStatus(currentDate, day.date);
+
+  const isCurrentDay = currentDate === getDateStringFromDateTimeString(day.date);
+
+  async function triggerUpdateDayStatus(e: MouseEvent<HTMLInputElement>) {
+    const res = await updateDayStatusMutation.mutateAsync({
+      status: isHabitPerformed,
+      id: day.id,
+    })
+    if (res.status === "error") {
+      setIsHabitPerformed(day.isPerformed);
+      toast.error(res.error);
+      return;
     }
-    return "unfulfilled"
-  }
 
-  function statusToBoolean(status: TDayStatus): boolean {
-    if (status === "pending" || status === "unfulfilled") return false
-    return true;
+    // probably invalidate all days and refetch all the days???. For now, I might just refetch all days in one api call
+    toast.success("Day updated successfully");
+    queryClient.invalidateQueries({
+      queryKey: ["days"]
+    })
   }
 
   return (
-    <div className={`flex flex-col items-center group gap-1 ${day.status === "pending" ? "opacity-30" : ""}`}>
+    <div className={`flex flex-col items-center group gap-1 ${canUpdate === false ? "opacity-30" : ""}`}>
       <label
-        className={`w-[5rem] h-[5rem] border-2 border-purple-200 rounded-full text-xl text-purple-700 hover:border-purple-300 aria-disabled:hover:border-purple-200 flex items-center justify-center cursor-pointer transition-colors duration-200 ${status === "fulfilled" ? "bg-purple-500 border-purple-600 text-white" : ""}`}
-        aria-disabled={day.status === "pending"}>
+        className={`w-[5rem] h-[5rem]  ${isCurrentDay ? "border-4" : "border-2"} border-purple-200 hover:border-purple-300 rounded-full text-xl text-purple-700 aria-disabled:hover:border-purple-200 flex items-center justify-center cursor-pointer transition-colors duration-200 ${isHabitPerformed ? "bg-purple-500 border-purple-600 text-white" : ""}`}
+        aria-disabled={canUpdate === false}>
         {serialNumber}
         <input
           type="checkbox"
-          disabled={day.status === "pending"}
+          disabled={canUpdate === false}
           className="hidden"
           onChange={(e) => {
-            const isChecked = e.target.checked;
-            setStatus(booleanToStatus(isChecked));
+            setIsHabitPerformed(e.target.checked);
           }}
-          checked={booleanStatus}
+          onClick={triggerUpdateDayStatus}
+          checked={isHabitPerformed}
         />
       </label>
 
       <span className="text-xs invisible text-gray-700 group-hover:visible">{
-        "3/May"
+        getDayMonth(day.date)
       }</span>
     </div>
   )
+}
+
+function getDayMonth(dateString: string): string {
+  const date = new Date(dateString);
+  const day = date.getDate();
+  const monthFormatter = new Intl.DateTimeFormat("default", {
+    month: "short"
+  })
+  return `${day}/${monthFormatter.format(date)}`
 }

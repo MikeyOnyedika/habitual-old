@@ -53,3 +53,33 @@ export async function deleteHabitDays(habitID: string): Promise<{ status: "succe
     }
   }
 }
+
+export async function updateDayIsPerformed({ userID, habitID, dayID, isPerformed }: {
+  userID: string, habitID: string, dayID: string, isPerformed: boolean
+}): Promise<
+  { status: "success", data: TDay } | { status: "error", error: string }
+> {
+  try {
+    const day = await DBDay.findById(dayID);
+    if (!day) {
+      throw new Error();
+    }
+    day.isPerformed = isPerformed;
+    await day.save();
+    return {
+      status: "success", data: {
+        id: day._id,
+        isPerformed: day.isPerformed,
+        habitID: day.habitID,
+        date: day.date,
+        createdAt: day.createdAt,
+        updatedAt: day.updatedAt
+      } as TDay
+    }
+  } catch (er) {
+    return {
+      status: "error",
+      error: "Couldn't update day"
+    }
+  }
+}

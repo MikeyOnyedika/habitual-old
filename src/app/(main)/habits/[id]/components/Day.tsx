@@ -16,7 +16,7 @@ export default function Day({ day, serialNumber, currentDateTime }: {
   const queryClient = useQueryClient();
 
   const updateDayStatusMutation = useMutation({
-    mutationFn: async (update: { status: boolean, id: string }) => await updateDayStatus(update.status, update.id),
+    mutationFn: async (update: { habitID: string, status: boolean, id: string }) => await updateDayStatus(update.habitID, update.status, update.id),
   });
 
   const currentDate = getDateStringFromDateTimeString(currentDateTime);
@@ -24,8 +24,17 @@ export default function Day({ day, serialNumber, currentDateTime }: {
 
   const isCurrentDay = currentDate === getDateStringFromDateTimeString(day.date);
 
-  async function triggerUpdateDayStatus(e: MouseEvent<HTMLInputElement>) {
+  useEffect(() => {
+    if (isHabitPerformed !== day.isPerformed) {
+      triggerUpdateDayStatus();
+    }
+
+    /* eslint-disable */
+  }, [isHabitPerformed, day.isPerformed])
+
+  async function triggerUpdateDayStatus() {
     const res = await updateDayStatusMutation.mutateAsync({
+      habitID: day.habitID,
       status: isHabitPerformed,
       id: day.id,
     })
@@ -37,8 +46,22 @@ export default function Day({ day, serialNumber, currentDateTime }: {
 
     // probably invalidate all days and refetch all the days???. For now, I might just refetch all days in one api call
     toast.success("Day updated successfully");
-    queryClient.invalidateQueries({
-      queryKey: ["days"]
+    // queryClient.invalidateQueries({
+    //   queryKey: ["days"]
+    // })
+    queryClient.setQueryData(["days"], (prev: { status: "success" | "error", data: TDay[] }) => {
+      const updatedDays = prev.data.map(d => {
+        if (d.id === day.id) {
+          return {
+            ...res.data
+          }
+        }
+        return d
+      });
+      return {
+        status: prev.status,
+        data: updatedDays
+      }
     })
   }
 
@@ -55,7 +78,6 @@ export default function Day({ day, serialNumber, currentDateTime }: {
           onChange={(e) => {
             setIsHabitPerformed(e.target.checked);
           }}
-          onClick={triggerUpdateDayStatus}
           checked={isHabitPerformed}
         />
       </label>

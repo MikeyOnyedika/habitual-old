@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import api from "./axios.config";
 import { TDay } from "../types";
 
-export async function updateDayStatus(isHabitPerformed: boolean, dayID: string): Promise<{
+export async function updateDayStatus(habitID: string, isHabitPerformed: boolean, dayID: string): Promise<{
   status: "success",
   data: TDay
 } | {
@@ -10,7 +10,7 @@ export async function updateDayStatus(isHabitPerformed: boolean, dayID: string):
   error: string
 }> {
   try {
-    const { data, status } = await api.patch(`/days/${dayID}`, {
+    const { data, status } = await api.patch(`/habits/${habitID}/days/${dayID}`, {
       isPerformed: isHabitPerformed
     })
     return {

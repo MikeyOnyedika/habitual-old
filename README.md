@@ -1,4 +1,4 @@
-# Habitual
+# Habitual (This is still a work in progress...)
 
 This is a simple habit tracker application.
 

@@ -24,7 +24,7 @@ export async function getDays(userID: string, habitID: string): Promise<{
   try {
     const days = await DBDay.find({
       habitID
-    });
+    }).sort({ date: 1 });
     return {
       status: "success",
       data: days.map(day => ({

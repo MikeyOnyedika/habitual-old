@@ -1,4 +1,4 @@
-# Habitual (This is still a work in progress...)
+# Habitual (Abandoned)
 
 This is a simple habit tracker application.
 
